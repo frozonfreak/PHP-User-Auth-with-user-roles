@@ -22,7 +22,8 @@ class Common_Functions{
 										7 => 'Unable to reset password',
 										8 => 'Unable to send email',
 										9 => 'Email Error',
-										10 => 'Unable to remove token'
+										10 => 'Unable to remove token',
+										11 => 'Unable to register user'
 									);
 
 	public function generateResponse($status, $data, $errorcode = 0){

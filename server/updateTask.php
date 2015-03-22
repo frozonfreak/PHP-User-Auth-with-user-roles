@@ -77,6 +77,20 @@
 		        }
 		        echo json_encode($response);
 		    break;
+
+		    case 'registerUser':
+		    	if(isset($receivedData->{"name"}) && isset($receivedData->{"email"}) && isset($receivedData->{"password"})){
+		        	$_userName = $receivedData->{"name"};
+		        	$_userEmail = $receivedData->{"email"};
+		        	$_userPass 	= $receivedData->{"password"};
+		        	
+		        	$response = $user -> registerUser($_userName, $_userEmail, $_userPass);
+		        }
+		        else{
+		        	$response = $common->generateResponse(false,'',1);
+		        }
+		        echo json_encode($response);
+		    break;
 		}
 	}
 	else {

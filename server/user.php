@@ -191,5 +191,28 @@ class User_Functions{
 		return $response;		
 	}
 
+	public function registerUser($_userName, $_userEmail, $_userPass){
+		$common 		= new Common_Functions();
+		$_sessionKey 	= md5(uniqid(rand(), TRUE)); //Generate Hash
+
+		try{
+			$db = new PDO(DB_STRING, DB_USER, DB_PASSWORD);
+			$sql = "INSERT INTO users(name, email, role, password, remember_token, created_at, updated_at) 
+					values (:name, :email, :role, :password, :remember_token, NOW(), NOW())";
+			$res = $db->prepare($sql);
+			$output = $res->execute(array(':name' => $_userName, ':email' => $_userEmail, ':password' => $_userPass, ':role' => 'MEMBER', ':remember_token' => $_sessionKey));
+			$db = null;
+			if($output){
+				$response = $common->generateResponse(true,"Success");
+			}
+			else{
+				$response = $common->generateResponse(false,'',11);	
+			}
+		}
+		catch(Exception $e){
+				$response = $common->generateResponse(false,(($e->getMessage()!=null) ? $e->getMessage():''),3);
+		}
+		return $response;
+	}
 }
 ?>

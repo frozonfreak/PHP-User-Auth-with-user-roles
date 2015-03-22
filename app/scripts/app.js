@@ -6,7 +6,7 @@ var angularApp = angular.module('angularApp',['ui.bootstrap','ui.router','ngAnim
       $rootScope.showData = true;
       // Needed for the loading screen
       $rootScope.$on('$locationChangeStart', function(event, next, current){
-        
+
       	//Remove header and footer for login page
       	if(next.indexOf("login") > -1 || next.indexOf("register") > -1 || next.indexOf("resetpassword") > -1 || next.indexOf("forgotpassword") > -1)
       		$rootScope.showData = false;
@@ -60,6 +60,11 @@ angularApp.config(function($stateProvider, $urlRouterProvider) {
       templateUrl: "views/resetpassword.html",
       controller: 'ResetPasswordCtrl',
     })
+    .state('register', {
+      url: "/register",
+      templateUrl: "views/register.html",
+      controller: 'RegisterCtrl',
+    })
     // For any unmatched url, redirect to /state1
      $urlRouterProvider.otherwise("/home");
 
@@ -95,6 +100,14 @@ angularApp.factory('appSession', function($http){
               token     : token,
               password  : password
           });
+        },
+        registerUser: function(name, email, password){
+          return $http.post('/LMSv2/server/updateTask.php',{
+              type      : 'registerUser',
+              name      : name, 
+              email     : email,
+              password  : password
+            });
         }
     }
 });
