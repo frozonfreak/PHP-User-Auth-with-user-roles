@@ -6,6 +6,7 @@ class User_Functions{
 	function __construct(){
 		require_once 'common.php';
 		require_once 'config.php';
+		require_once 'email.php';
 	}
 
 	//destructor
@@ -84,6 +85,7 @@ class User_Functions{
 		return $response;
 	}
 
+	//Check if session exists and if session time is within limit
 	public function verifySession($_userEmail, $_userToken){
 		$common 		= new Common_Functions();
 
@@ -110,5 +112,84 @@ class User_Functions{
 
 		return $response;
 	}
+
+
+	//Generate reset token and send email to user
+	public function forgotpassword($_userEmail){
+		$common 		= new Common_Functions();
+		$email 			= new Email_Functions();
+
+		$_token 	 	= md5(uniqid(rand(), TRUE)); //Generate Hash
+
+		try{
+			$db = new PDO(DB_STRING, DB_USER, DB_PASSWORD);
+			$sql = "REPLACE INTO password_resets VALUES ((SELECT email FROM users WHERE email=:user_email), :token, NOW())";
+			$res = $db->prepare($sql);
+			$output = $res->execute(array(':user_email' => $_userEmail, ':token' => $_token));
+			$db = null;
+			if($output){
+				//Send email
+				$res = $email->sendEmail($_userEmail, DEFAULT_HOST.$_userEmail.'/'.$_token);
+				//If email successfull then send response to user
+				if($res)
+					$response = $common->generateResponse(true,'Success');
+				else
+					$response = $common->generateResponse(false,'',8);	
+			}
+			else{
+				$response = $common->generateResponse(false,'',7);
+			}
+		}
+		catch(Exception $e){
+			$response = $common->generateResponse(false,(($e->getMessage()!=null) ? $e->getMessage():''), 3);
+		}
+
+		return $response;
+
+	}
+
+	public function resetpassword($_userEmail, $_userToken, $_userPass){
+		$common 		= new Common_Functions();
+
+		try{
+			//Update password is token is correct
+			$db = new PDO(DB_STRING, DB_USER, DB_PASSWORD);
+			$sql = $db->prepare("UPDATE password_resets, users SET users.password = :user_pass WHERE password_resets.token = :token AND password_resets.email = :user_email AND password_resets.email = users.email");
+			$sql->bindParam(':token', $_userToken, PDO::PARAM_STR);
+			$sql->bindParam(':user_email', $_userEmail, PDO::PARAM_STR);
+			$sql->bindParam(':user_pass', $_userPass, PDO::PARAM_STR);
+			//$sql->execute();
+			$db = null;
+			if($sql->execute()){
+
+				//DELETE password token
+				try{
+					$db = new PDO(DB_STRING, DB_USER, DB_PASSWORD);
+					$sql = "DELETE FROM password_resets WHERE email=?";
+					$res = $db->prepare($sql);
+					$res->execute(array($_userEmail));
+					$db = null;
+					if($res){
+						$response = $common->generateResponse(true,'Success');
+					}
+					else{
+						$response = $common->generateResponse(false,'',10);	
+					}
+				}
+				catch(Exception $e){
+						$response = $common->generateResponse(false,(($e->getMessage()!=null) ? $e->getMessage():''), 3);
+				}
+			}
+			else{
+				$response = $common->generateResponse(false,'',7);
+			}
+		}
+		catch(Exception $e){
+			$response = $common->generateResponse(false,(($e->getMessage()!=null) ? $e->getMessage():''),3);
+		}
+
+		return $response;		
+	}
+
 }
 ?>

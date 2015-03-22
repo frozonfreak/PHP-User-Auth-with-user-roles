@@ -14,6 +14,14 @@ define("DEBUG", true);
 /* SET Default Session Time*/
 define("DEFAULT_SESSION_TIME", 1800);
 
+/*Default host for emailing*/
+define("DEFAULT_HOST", 'http://localhost/');
+
+/*Email Configurations*/
+define("MANDRILL_KEY", UPDATE KEY HERE);
+define("SENDER_EMAIL", 'test@test.com');
+define("SENDER_NAME", 'sender_name');
+
 
 define("ROOT", 'SUPER_ADMIN');
 define("ADMIN", 'ADMIN');

@@ -18,7 +18,11 @@ class Common_Functions{
 										3 => 'Error retriving from database', 
 										4 => 'Invalid Session',
 										5 => 'Valid Session',
-										6 => 'User not Authourised'
+										6 => 'User not Authourised',
+										7 => 'Unable to reset password',
+										8 => 'Unable to send email',
+										9 => 'Email Error',
+										10 => 'Unable to remove token'
 									);
 
 	public function generateResponse($status, $data, $errorcode = 0){

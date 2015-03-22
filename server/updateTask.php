@@ -51,6 +51,32 @@
 		        }
 		        echo json_encode($response);
 		    break;
+
+		    case 'forgotpassword':
+		    	if(isset($receivedData->{"email"})){
+		    		$_userEmail 	= $receivedData->{"email"};
+
+		    		$response = $user -> forgotpassword($_userEmail);
+		    	}
+		    	else{
+		        	$response = $common->generateResponse(false,'',1);
+		        }
+		        echo json_encode($response);
+		    break;
+
+		    case 'resetpassword':
+		    	if(isset($receivedData->{"email"}) && isset($receivedData->{"token"}) && isset($receivedData->{"password"})){
+		        	$_userEmail 	= $receivedData->{"email"};
+		        	$_userToken 	= $receivedData->{"token"};
+		        	$_userPass 		= $receivedData->{"password"};
+		        	
+		        	$response = $user -> resetpassword($_userEmail, $_userToken, $_userPass);
+		        }
+		        else{
+		        	$response = $common->generateResponse(false,'',1);
+		        }
+		        echo json_encode($response);
+		    break;
 		}
 	}
 	else {

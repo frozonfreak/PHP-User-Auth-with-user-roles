@@ -6,9 +6,9 @@ var angularApp = angular.module('angularApp',['ui.bootstrap','ui.router','ngAnim
       $rootScope.showData = true;
       // Needed for the loading screen
       $rootScope.$on('$locationChangeStart', function(event, next, current){
-      	
+        
       	//Remove header and footer for login page
-      	if(next.indexOf("login") > -1 || next.indexOf("register") > -1 || next.indexOf("passwordreset") > -1)
+      	if(next.indexOf("login") > -1 || next.indexOf("register") > -1 || next.indexOf("resetpassword") > -1 || next.indexOf("forgotpassword") > -1)
       		$rootScope.showData = false;
       	else{
       		//If not login page or registration page or password reset, then check for valid session before route change
@@ -29,9 +29,6 @@ var angularApp = angular.module('angularApp',['ui.bootstrap','ui.router','ngAnim
         $rootScope.loading = false;
       });
 
-      // Fake text i used here and there.
-      $rootScope.lorem = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel explicabo, aliquid eaque soluta nihil eligendi adipisci error, illum corrupti nam fuga omnis quod quaerat mollitia expedita impedit dolores ipsam. Obcaecati.';
-
 });
 
 angularApp.config(function($stateProvider, $urlRouterProvider) {
@@ -43,8 +40,8 @@ angularApp.config(function($stateProvider, $urlRouterProvider) {
       templateUrl: "views/main.html",
       controller: 'MainCtrl',
     })
-    .state('about', {
-      url: "/about",
+    .state('member', {
+      url: "/member",
       templateUrl: "views/about.html",
       controller: 'AboutCtrl',
     })
@@ -52,6 +49,16 @@ angularApp.config(function($stateProvider, $urlRouterProvider) {
       url: "/login",
       templateUrl: "views/login.html",
       controller: 'LoginCtrl',
+    })
+    .state('forgotpassword', {
+      url: "/forgotpassword",
+      templateUrl: "views/forgotpassword.html",
+      controller: 'ForgotPasswordCtrl',
+    })
+    .state('resetpassword', {
+      url: "/resetpassword/:email/:token",
+      templateUrl: "views/resetpassword.html",
+      controller: 'ResetPasswordCtrl',
     })
     // For any unmatched url, redirect to /state1
      $urlRouterProvider.otherwise("/home");
@@ -61,18 +68,32 @@ angularApp.config(function($stateProvider, $urlRouterProvider) {
 angularApp.factory('appSession', function($http){
     return {
         verifyLogin: function(email, password) {
-          	return $http.post('/php_user_auth/server/updateTask.php',{
+          	return $http.post('/LMSv2/server/updateTask.php',{
 	            type      : 'verifyLogin',
 	            email     : email,
 	            password  : password
           	});
         },
         verifySessionAndAuth: function(token,email, url){
-        	return $http.post('/php_user_auth/server/updateTask.php',{
+        	return $http.post('/LMSv2/server/updateTask.php',{
 	            type      : 'verifySessionAndAuth',
 	            token     : token,
 	            email  	  : email,
 	            url 	  : url
+          });
+        },
+        forgotpassword: function(email){
+          return $http.post('/LMSv2/server/updateTask.php',{
+              type      : 'forgotpassword',
+              email     : email
+          });
+        },
+        resetpassword: function(email, token, password){
+          return $http.post('/LMSv2/server/updateTask.php',{
+              type      : 'resetpassword',
+              email     : email,
+              token     : token,
+              password  : password
           });
         }
     }
