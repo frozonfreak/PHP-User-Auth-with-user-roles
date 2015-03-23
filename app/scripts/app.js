@@ -73,14 +73,14 @@ angularApp.config(function($stateProvider, $urlRouterProvider) {
 angularApp.factory('appSession', function($http){
     return {
         verifyLogin: function(email, password) {
-          	return $http.post('/LMSv2/server/updateTask.php',{
+          	return $http.post('/PHP-User-Auth-with-user-roles/server/updateTask.php',{
 	            type      : 'verifyLogin',
 	            email     : email,
 	            password  : password
           	});
         },
         verifySessionAndAuth: function(token,email, url){
-        	return $http.post('/LMSv2/server/updateTask.php',{
+        	return $http.post('/PHP-User-Auth-with-user-roles/server/updateTask.php',{
 	            type      : 'verifySessionAndAuth',
 	            token     : token,
 	            email  	  : email,
@@ -88,13 +88,13 @@ angularApp.factory('appSession', function($http){
           });
         },
         forgotpassword: function(email){
-          return $http.post('/LMSv2/server/updateTask.php',{
+          return $http.post('/App/server/updateTask.php',{
               type      : 'forgotpassword',
               email     : email
           });
         },
         resetpassword: function(email, token, password){
-          return $http.post('/LMSv2/server/updateTask.php',{
+          return $http.post('/PHP-User-Auth-with-user-roles/server/updateTask.php',{
               type      : 'resetpassword',
               email     : email,
               token     : token,
@@ -102,7 +102,7 @@ angularApp.factory('appSession', function($http){
           });
         },
         registerUser: function(name, email, password){
-          return $http.post('/LMSv2/server/updateTask.php',{
+          return $http.post('/PHP-User-Auth-with-user-roles/server/updateTask.php',{
               type      : 'registerUser',
               name      : name, 
               email     : email,
